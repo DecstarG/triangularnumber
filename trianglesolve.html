@@ -1,0 +1,87 @@
+<!-- Formula is V=T*(.5*(T+1)) for value !-->
+<!-- T=V/(0.5*secondhighestfactor)!-->
+<!-- Copyright Declan Goldston 2017 !-->
+<html>
+<head>
+	<title>Triangular Number Solver</title>
+</head>
+<body>
+Enter your Term/Value: <input id="term"><br><button onclick="solvetriangle()">Value</button><button onclick="checktriangle()">Term</button>
+<div id="answer"></div>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.16.5/math.min.js"></script>
+<script type="text/javascript">
+	function solvetriangle() {
+		var term = document.getElementById("term").value;
+		if (term=="") {
+			document.getElementById("answer").innerHTML="<font color='red'>Error: No Number - Enter number in form</font>";
+		} else if (isNaN(term)) {
+			document.getElementById("answer").innerHTML="<font color='red'>Error: "+term+" isn't a number.</font>";
+		} else {
+			var value = math.eval(term+'*(.5*('+term+'+1))')
+			if (value.toString().indexOf('e') > -1) {
+    			var value = toFixed(math.eval(term+'*(.5*('+term+'+1))'))
+    			document.getElementById("answer").innerHTML="<font color='orange'>WARNING - Value will not be accurate due to it being over 21 digits</font><br><font color='green'>Success - For term "+term+" in the sequence the value will be "+value+".</font>";
+			} else {
+				document.getElementById("answer").innerHTML="<font color='green'>Success - For term "+term+" in the sequence the value will be "+value+".</font>";
+			}
+		}
+	}
+	function checktriangle() {
+		var v = document.getElementById("term").value;
+		if (v=="") {
+			document.getElementById("answer").innerHTML="<font color='red'>Error: No Number - Enter number in form</font>";
+		} else if (isNaN(v)) {
+			document.getElementById("answer").innerHTML="<font color='red'>Error: "+v+" isn't a number.</font>";
+		} else {
+			var slf = calculate(v)
+			ya = slf[slf.length-2]
+			var term = math.eval("-0.5+0.5*sqrt(8*"+v+"+1)");
+            if (isInt(term)) {
+                document.getElementById("answer").innerHTML="<font color='green'>Success - "+v+" is a triangular number and it's term is "+term+"</font>";
+            } else {
+                document.getElementById("answer").innerHTML="<font color='green'>Success - "+v+" is not a triangular number.</font>";
+            }
+			
+		}
+	}
+	function toFixed(x) {
+  		if (Math.abs(x) < 1.0) {
+    		var e = parseInt(x.toString().split('e-')[1]);
+    		if (e) {
+        		x *= Math.pow(10,e-1);
+        		x = '0.' + (new Array(e)).join('0') + x.toString().substring(2);
+    		}
+  		} else {
+    		var e = parseInt(x.toString().split('+')[1]);
+    		if (e > 20) {
+        		e -= 20;
+        		x /= Math.pow(10,e);
+        		x += (new Array(e+1)).join('0');
+    		}
+  		}
+  		return x;
+	}
+	function calculate(num) {
+
+    var half = Math.floor(num / 2), // Ensures a whole number <= num.
+        str = '1', // 1 will be a part of every solution.
+        i, j;
+
+    // Determine our increment value for the loop and starting point.
+    num % 2 === 0 ? (i = 2, j = 1) : (i = 3, j = 2);
+
+    for (i; i <= half; i += j) {
+        num % i === 0 ? str += ',' + i : false;
+    }
+
+    str += ',' + num; // Always include the original number.
+    var array = str.split(',');
+    return array;
+	}
+    function isInt(n) {
+        return n % 1 === 0;
+    }
+</script>
+</body>
+</html>
+
